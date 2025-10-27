@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="61px" height="61px" viewBox="0 0 61 61" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <path d="M0 0L57 0L57 57L0 57L0 0Z" id="path_1" />
+    <clipPath id="mask_1">
+      <use xlink:href="#path_1" />
+    </clipPath>
+  </defs>
+  <g id="svg" transform="translate(2 2)">
+    <path d="M0 0L57 0L57 57L0 57L0 0Z" id="Background" fill="none" fill-rule="evenodd" stroke="none" />
+    <g clip-path="url(#mask_1)">
+      <g id="Group-5-Copy-2" transform="translate(2 2)">
+        <path d="M53 26.5C53 41.1355 41.1355 53 26.5 53C11.8645 53 0 41.1355 0 26.5C0 11.8645 11.8645 0 26.5 0C41.1355 0 53 11.8645 53 26.5L53 26.5Z" id="Stroke-1" fill="none" fill-rule="evenodd" stroke="#FFFFFF" stroke-width="4" />
+        <path d="M27.0001 28.1452C23.5141 28.1452 20.6881 25.3449 20.6881 21.8907C20.6881 18.4365 23.5141 15.6362 27.0001 15.6362C30.4861 15.6362 33.3121 18.4365 33.3121 21.8907C33.3121 25.3449 30.4861 28.1452 27.0001 28.1452M27.0001 10C20.3727 10 15 15.3237 15 21.8907C15 26.4806 20.8619 35.5805 24.3918 40.6442C25.652 42.4519 28.348 42.4519 29.6084 40.6442C33.1383 35.5805 39 26.4806 39 21.8907C39 15.3237 33.6275 10 27.0001 10" id="Fill-3" fill="#FFFFFF" fill-rule="evenodd" stroke="none" />
+      </g>
+    </g>
+  </g>
+</svg>
