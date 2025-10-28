@@ -1,0 +1,4 @@
+- Npm install en raíz del tema child
+- Modificar css en assets/theme/_child-theme.scss
+- Compilar con npm run css o npm run js
+- Para servir, npm dist-build

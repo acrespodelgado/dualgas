@@ -1,0 +1,21 @@
+.hamburger {
+
+    &:focus {
+        box-shadow: none;
+    }
+
+    &.is-active {
+
+        .hamburger-inner,
+        .hamburger-inner::before,
+        .hamburger-inner::after {
+            background: $accent;
+        }
+    }
+
+    .hamburger-inner,
+    .hamburger-inner::before,
+    .hamburger-inner::after {
+        background: $accent;
+    }
+}
