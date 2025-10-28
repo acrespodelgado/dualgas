@@ -29,15 +29,14 @@ if ( is_front_page() ) {
 				<main class="site-main" id="main" role="main">
 
                     <div class="area-negocio-content-1">
-                        <?php masterslider("ms-2"); ?>
-                        <div class="green-bar"></div>
                         <?php masterslider("ms-3"); ?>
+                        <div class="green-bar"></div>
+                        <?php masterslider("ms-2"); ?>                        
                         <div class="green-bar"></div>
                         <?php masterslider("ms-4"); ?>
                         <div class="green-bar"></div>
-                        <?php masterslider("ms-5"); ?>
+                        <?php masterslider("ms-22"); ?>
                         <div class="green-bar"></div>
-                        <?php masterslider("ms-6"); ?>
                     </div>
 
 				</main><!-- #main -->

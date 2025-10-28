@@ -37,7 +37,7 @@ $container = get_theme_mod( 'understrap_container_type' );
 								<li><a href="<?php echo get_site_url();?>/nosotros/" title="<?php _e( 'Nosotros', 'understrap-master' ); ?>"><?php _e( 'Nosotros', 'understrap-master' ); ?></a></li>
 								<li><a href="<?php echo get_site_url();?>/areas-de-negocios/" title="<?php _e( 'Áreas de negocios', 'understrap-master' ); ?>"><?php _e( 'Áreas de negocios', 'understrap-master' ); ?></a></li>
 								<li><a href="<?php echo get_site_url();?>/sostenibilidad/" title="<?php _e( 'Sostenibilidad', 'understrap-master' ); ?>"><?php _e( 'Sostenibilidad', 'understrap-master' ); ?></a></li>
-								<li><a href="<?php echo get_site_url();?>/personas/" title="<?php _e( 'Personas', 'understrap-master' ); ?>"><?php _e( 'Personas', 'understrap-master' ); ?></a></li>
+								<li><a href="<?php echo get_site_url();?>/trabaja-con-nosotros/" title="<?php _e( 'Personas', 'understrap-master' ); ?>"><?php _e( 'Personas', 'understrap-master' ); ?></a></li>
 								<li><a href="<?php echo get_site_url();?>/contacto/" title="<?php _e( 'Contacto', 'understrap-master' ); ?>"><?php _e( 'Contacto', 'understrap-master' ); ?></a></li>
 								<li><a href="<?php echo get_site_url();?>/accionistas/" title="<?php _e( 'Accionistas', 'understrap-master' ); ?>"><?php _e( 'Accionistas', 'understrap-master' ); ?></a></li>
 							</ul>

