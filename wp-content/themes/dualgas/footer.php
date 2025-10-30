@@ -46,7 +46,7 @@ $container = get_theme_mod( 'understrap_container_type' );
 							<h2><?php _e( 'CONTACTO', 'understrap-master' ); ?></h2>
 							<ul>
 								<li><a href="mailto:info@dualgas.es" target="_blank"><?php _e( 'info@dualgas.es', 'understrap-master' ); ?></a></li>
-								<li><a href="tel:+34641354762" target="_blank"><?php _e( '(+34) 641 354 762', 'understrap-master' ); ?></a></li>
+								<li><a href="tel:+34955263351" target="_blank"><?php _e( '(+34) 955 263 351', 'understrap-master' ); ?></a></li>
 								<br>
 								<h2><?php _e( 'CONTACTO RRHH', 'understrap-master' ); ?></h2>
 								<li><a href="mailto:rrhhcv@dualgas.es" target="_blank"><?php _e( 'rrhhcv@dualgas.es', 'understrap-master' ); ?></a></li>
@@ -65,7 +65,7 @@ $container = get_theme_mod( 'understrap_container_type' );
 							<h2><?php _e( 'DÓNDE ESTAMOS', 'understrap-master' ); ?></h2>
 							<ul>
 								<li><?php _e( 'Poligono Industrial La Isla', 'understrap-master' ); ?></li>
-								<li><?php _e( 'Dos Hermanas, Sevilla 41020 (España)', 'understrap-master' ); ?></li>
+								<li><?php _e( 'C/ Acueducto 104 derecha Dos Hermanas, Sevilla (España)', 'understrap-master' ); ?></li>
 							</ul>
 						</div>
 						<div class="col-12 col-md-3 mt-3 np">
