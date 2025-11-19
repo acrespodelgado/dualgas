@@ -1,70 +1,121 @@
 <?php
 
+if (ob_get_level()) {
+    ob_end_clean();
+}
+ob_start();
+
 session_start();
-require_once('./../wp-load.php');
-require  './../wp-config.php';
+require_once(__DIR__ . '/../wp-config.php');
+
+ob_clean();
+
+header('Content-Type: application/json; charset=utf-8');
+header('Cache-Control: no-cache, must-revalidate');
 
 date_default_timezone_set('Europe/Madrid');
 
-if(isset($_POST['mensaje']) && !empty($_POST['mensaje'])
-&& isset($_POST['codigo']) && !empty($_POST['codigo'])
-&& isset($_POST['id']) && !empty($_POST['id'])) {
+try {
+    if (!isset($_POST['mensaje']) || empty(trim($_POST['mensaje'])) ||
+        !isset($_POST['codigo']) || empty($_POST['codigo']) ||
+        !isset($_POST['id']) || empty($_POST['id'])) {
+        echo json_encode(["ok" => 0, "message" => "Por favor, escriba su mensaje."]);
+        exit;
+    }
 
-    if(isset($_POST['id_agente']) && !empty($_POST['id_agente'])) 
-        $id_agent = $_POST['id_agente'];
-    else 
-        $id_agent = 1;
+    // Determinar ID del agente
+    $id_agent = (isset($_POST['id_agente']) && !empty($_POST['id_agente'])) ? $_POST['id_agente'] : 1;
 
     $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+    
+    if ($mysqli->connect_errno) {
+        echo json_encode(["ok" => 0, "message" => "Error de conexión"]);
+        exit;
+    }
+    
     $mysqli->set_charset("utf8");
 
-    $message = $_POST['mensaje'];
+    $message = trim($_POST['mensaje']);
     $code = $_POST['codigo'];
     $id = $_POST['id'];
+
+    // Verificar que el chat existe y coincide
+    $stmt = $mysqli->prepare("SELECT id FROM chats WHERE code = ? AND id = ?");
+    $stmt->bind_param("si", $code, $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
     
-    $message = trim(htmlspecialchars($mysqli->real_escape_string($message)));
-    $code = trim(htmlspecialchars($mysqli->real_escape_string($code)));
-    $id = trim(htmlspecialchars($mysqli->real_escape_string($id)));
+    $id_check = null;
+    if ($row = $result->fetch_assoc()) {
+        $id_check = $row['id'];
+    }
+    $stmt->close();
 
-    $sql = "SELECT id FROM chats WHERE code = '".$code."'";
-    $res = $mysqli->query($sql);
-
-    while ($fila = $res->fetch_object()) {
-        $id_check = $fila->id;
+    if ($id != $id_check) {
+        echo json_encode(["ok" => 0, "message" => "Se ha producido un error en la validación del chat. Intente de nuevo."]);
+        $mysqli->close();
+        exit;
     }
 
-    if($id == $id_check) {
-        $now = new DateTime(null, new DateTimeZone('Europe/Madrid'));
+    $now = new DateTime(null, new DateTimeZone('Europe/Madrid'));
+    $fecha_envio = $now->format('Y-m-d H:i:s');
 
-        $sql_insert_message = "INSERT INTO messages VALUES ('', $id, '".$message."', 0, '".$now->format('Y-m-d H:i:s')."')";
-        $res_insert_message = $mysqli->query($sql_insert_message);
-
-        $sql_check_id = "SELECT id FROM messages WHERE chat_id = '".$id."' ORDER BY id DESC LIMIT 1";
-        $res_check = $mysqli->query($sql_check_id);
-
-        while ($fila = $res_check->fetch_object()) {
-            $id_message = $fila->id;
-        }
+    // Insertar mensaje
+    $stmt = $mysqli->prepare("INSERT INTO messages (chat_id, content, state, sent_at) VALUES (?, ?, 0, ?)");
+    $stmt->bind_param("iss", $id, $message, $fecha_envio);
     
-        $sql_insert_messageSendBy = "INSERT INTO messageSendBy VALUES ('', ".$id_message.", ".$id_agent.")";
-        $res_insert_messageSendBy = $mysqli->query($sql_insert_messageSendBy);
-
-        if($id_agent == 1) {
-            $to = 'compliance@dualgas.es';
-            $title = 'Nuevo mensaje en línea de comunicación segura ID: ' . $code;
-            $message_email = $message;
-
-            wp_mail($to, $title, $message_email);
-        }
-
-        echo json_encode(["ok" => "1", "message" => $message, "date" => $now]);
-    } else {
-        echo json_encode(["ok" => "0", "message" => "Se ha producido un error en la validación del chat. Intente de nuevo."]);
+    if (!$stmt->execute()) {
+        echo json_encode(["ok" => 0, "message" => "Error al enviar el mensaje"]);
+        $stmt->close();
+        $mysqli->close();
+        exit;
     }
+    
+    $id_message = $mysqli->insert_id;
+    $stmt->close();
+
+    // Verificar que se obtuvo el ID del mensaje
+    if (!$id_message) {
+        echo json_encode(["ok" => 0, "message" => "Error al obtener el ID del mensaje"]);
+        $mysqli->close();
+        exit;
+    }
+
+    // Insertar relación mensaje-agente
+    $stmt = $mysqli->prepare("INSERT INTO messageSendBy (message_id, agent_id) VALUES (?, ?)");
+    $stmt->bind_param("ii", $id_message, $id_agent);
+    
+    if (!$stmt->execute()) {
+        echo json_encode(["ok" => 0, "message" => "Error al asociar el mensaje"]);
+        $stmt->close();
+        $mysqli->close();
+        exit;
+    }
+    $stmt->close();
+
+    // Enviar email si es un usuario (no agente)
+    if ($id_agent == 1) {
+        $to = 'compliance@dualgas.es';
+        $title = 'Nuevo mensaje en línea de comunicación segura ID: ' . $code;
+        $message_email = $message;
+
+        if (!function_exists('wp_mail')) {
+            require_once(__DIR__ . '/../wp-load.php');
+        }
+        wp_mail($to, $title, $message_email);
+    }
+
+    echo json_encode([
+        "ok" => 1, 
+        "message" => $message, 
+        "date" => $fecha_envio
+    ]);
 
     $mysqli->close();
-} else {
-    echo json_encode(["ok" => "0", "message" => "Por favor, escriba su mensaje."]);
+
+} catch (Exception $e) {
+    echo json_encode(["ok" => 0, "message" => "Error interno"]);
 }
 
+ob_end_flush();
 ?>

@@ -16,7 +16,7 @@ get_header();
 $container = get_theme_mod( 'understrap_container_type' );
 
 if ( is_front_page() ) {
-	get_template_part( 'global-templates/hero' );
+    get_template_part( 'global-templates/hero' );
 }
 
 $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
@@ -27,13 +27,13 @@ date_default_timezone_set('Europe/Madrid');
 
 <div class="wrapper py-0" id="chat">
 
-	<div class="container" id="content">
+    <div class="container" id="content">
 
-		<div class="row">
+        <div class="row">
 
-			<div class="col col-md-12 content-area np" id="primary">
+            <div class="col col-md-12 content-area np" id="primary">
 
-				<main class="site-main" id="main" role="main">
+                <main class="site-main" id="main" role="main">
                     
                     <div class="chat-content-1 py-5">
 
@@ -42,32 +42,50 @@ date_default_timezone_set('Europe/Madrid');
 
                                 $datos = explode("&", $_COOKIE['CookieCaso']);
 
-                                $id = $datos[0];
-                                $code = $datos[1];
-                                $pass = $datos[2];
+                                // Inicializar variables por defecto
+                                $id = isset($datos[0]) ? $datos[0] : null;
+                                $code = isset($datos[1]) ? $datos[1] : null;
+                                $pass = isset($datos[2]) ? $datos[2] : null;
+
+                                // Inicializar variables para evitar warnings
+                                $id_check = null;
+                                $state = null;
+                                $created_at = null;
+                                $id_agente = null;
 
                                 $now = new DateTime(null, new DateTimeZone('Europe/Madrid'));
 
-                                $sql_check = "SELECT id, state, created_at FROM chats WHERE password = '".$pass."' and code = '".$code."'";
-                                $res_check = $mysqli->query($sql_check);
+                                // Verificar que tenemos todos los datos necesarios
+                                if ($id && $code && $pass) {
+                                    // Usar prepared statements para mayor seguridad
+                                    $sql_check = "SELECT id, state, created_at FROM chats WHERE password = ? AND code = ?";
+                                    $stmt = $mysqli->prepare($sql_check);
+                                    $stmt->bind_param("ss", $pass, $code);
+                                    $stmt->execute();
+                                    $res_check = $stmt->get_result();
 
-                                while ($fila = $res_check->fetch_object()) {
-                                    $id_check = $fila->id;
-                                    $state = $fila->state;
-                                    $created_at = $fila->created_at;
+                                    while ($fila = $res_check->fetch_object()) {
+                                        $id_check = $fila->id;
+                                        $state = $fila->state;
+                                        $created_at = $fila->created_at;
+                                    }
+                                    $stmt->close();
                                 }
 
-                                $created = date('d/m/Y H:i:s', strtotime($created_at));
+                                // Solo convertir la fecha si existe
+                                $created = $created_at ? date('d/m/Y H:i:s', strtotime($created_at)) : '';
 
+                                // Verificar cookie de agente
                                 if(isset($_COOKIE['CookieAgente'])) {
+                                    $datos_agente = explode("&", $_COOKIE['CookieAgente']);
                                     if(is_array($datos_agente) && count($datos_agente) >= 3) {
                                         $id_agente = $datos_agente[0];
                                         $nick = $datos_agente[1];
-                                        $pass = $datos_agente[2];
+                                        $pass_agente = $datos_agente[2];
 
                                         $sql_check = "SELECT id FROM agents WHERE password = ? AND nick = ?";
                                         $stmt = $mysqli->prepare($sql_check);
-                                        $stmt->bind_param("ss", $pass, $nick);
+                                        $stmt->bind_param("ss", $pass_agente, $nick);
                                         $stmt->execute();
                                         $res_check = $stmt->get_result();
 
@@ -75,18 +93,21 @@ date_default_timezone_set('Europe/Madrid');
                                         while ($fila = $res_check->fetch_object()) {
                                             $id_check_agent = $fila->id;
                                         }
+                                        $stmt->close();
     
                                         if($id_check_agent !== null && $id_agente == $id_check_agent) {
-                                            // Utiliza consultas preparadas para evitar inyecciones SQL
+                                            // Marcar mensajes como leídos
                                             $sql_mensajes_leidos = "UPDATE messages SET state = 1 WHERE chat_id = ?";
                                             $stmt = $mysqli->prepare($sql_mensajes_leidos);
                                             $stmt->bind_param("i", $id);
                                             $stmt->execute();
+                                            $stmt->close();
                                         }
                                     }
                                 }
 
-                                if($id == $id_check && $state == 1) {
+                                // Verificar que el chat existe y está activo
+                                if($id_check && $id == $id_check && $state == 1) {
                             ?>
                                 <div class="container">
                                     <div class="row info">
@@ -98,7 +119,7 @@ date_default_timezone_set('Europe/Madrid');
                                             <p><?php echo $state == 0 ? 'Cerrado' : 'Abierto'; ?></p>
                                             <h2><?php _e( 'Creado el: ', 'understrap-master' ); ?> </h2>
                                             <p><?php echo $created; ?></p>
-                                            <?php if(isset($id_agente)) { ?>
+                                            <?php if(isset($id_agente) && $id_agente) { ?>
                                                 <a href="<?php echo get_site_url();?>/admin-panel/" class="btn btn-primary"><?php _e( 'Atrás', 'understrap-master' ); ?></a>
                                             <?php } else { ?>
                                                 <button type="button" class="btn btn-primary" id="log-out"><?php _e( 'Cerrar sesión', 'understrap-master' ); ?></button>
@@ -116,29 +137,35 @@ date_default_timezone_set('Europe/Madrid');
                                                 con el fin de poder acceder una vez haya enviado su mensaje, gracias. ', 'understrap-master' ); ?>
                                             </div>
                                             <?php 
-                                                $sql_mensajes = "SELECT messages.content, messages.sent_at, messageSendBy.agent_id, agents.nick "; 
-                                                $sql_mensajes = $sql_mensajes."FROM messages INNER JOIN messageSendBy ON messages.id = messageSendBy.message_id ";
-                                                $sql_mensajes = $sql_mensajes."INNER JOIN agents ON messageSendBy.agent_id = agents.id ";  
-                                                $sql_mensajes = $sql_mensajes."WHERE messages.chat_id = '".$id."'";
-                                                $res_mensajes = $mysqli->query($sql_mensajes);
-                                                
+                                                // Usar prepared statement para los mensajes también
+                                                $sql_mensajes = "SELECT messages.content, messages.sent_at, messageSendBy.agent_id, agents.nick 
+                                                                FROM messages 
+                                                                INNER JOIN messageSendBy ON messages.id = messageSendBy.message_id 
+                                                                INNER JOIN agents ON messageSendBy.agent_id = agents.id 
+                                                                WHERE messages.chat_id = ? 
+                                                                ORDER BY messages.sent_at ASC";
+                                                $stmt = $mysqli->prepare($sql_mensajes);
+                                                $stmt->bind_param("i", $id_check);
+                                                $stmt->execute();
+                                                $res_mensajes = $stmt->get_result();
                                             ?>
                                         
                                                 <div class="messages">
                                                     <?php while($fila = $res_mensajes->fetch_object()) { ?>
                                                         <div class="<?php echo $fila->agent_id > 1 ? 'message-agent' : 'message'; ?>">
                                                             <?php echo $fila->agent_id > 1 ? '<span class="agent">'.$fila->nick.'</span>' : ''; ?>
-                                                            <p><?php echo $fila->content; ?></p>
+                                                            <p><?php echo htmlspecialchars($fila->content); ?></p>
                                                             <span class="date"><?php echo date('d/m/Y H:i:s', strtotime($fila->sent_at)); ?></span>
                                                         </div>
                                                     <?php } ?>
                                                 </div>
+                                                <?php $stmt->close(); ?>
 
                                             <div class="bottom">
-                                                <input type="hidden" id="input-codigo-caso" name="input-codigo-caso" value="<?php echo $code; ?>">
-                                                <input type="hidden" id="input-id-caso" name="input-id-caso" value="<?php echo $id_check; ?>">
-                                                <?php if(isset($id_agente)) { ?>
-                                                    <input type="hidden" id="input-id-agente" name="input-id-agente" value="<?php echo $id_agente; ?>">
+                                                <input type="hidden" id="input-codigo-caso" name="input-codigo-caso" value="<?php echo htmlspecialchars($code); ?>">
+                                                <input type="hidden" id="input-id-caso" name="input-id-caso" value="<?php echo htmlspecialchars($id_check); ?>">
+                                                <?php if(isset($id_agente) && $id_agente) { ?>
+                                                    <input type="hidden" id="input-id-agente" name="input-id-agente" value="<?php echo htmlspecialchars($id_agente); ?>">
                                                 <?php } ?>
                                                 <textarea id="input-chat-text" name="chat-text" placeholder="Escriba su mensaje..."></textarea>
                                                 <button type="button" id="enviar-mensaje" class="btn btn-primary"><?php _e( 'Enviar', 'understrap-master' ); ?></button>
@@ -166,15 +193,16 @@ date_default_timezone_set('Europe/Madrid');
                         <?php } ?>
                     </div>
                     
-				</main><!-- #main -->
+                </main><!-- #main -->
 
-			</div><!-- #primary -->
+            </div><!-- #primary -->
 
-		</div><!-- .row end -->
+        </div><!-- .row end -->
 
-	</div><!-- #content -->
+    </div><!-- #content -->
 
 </div><!-- #full-width-page-wrapper -->
 
 <?php
+$mysqli->close();
 get_footer();

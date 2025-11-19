@@ -68,6 +68,7 @@ if ( is_front_page() ) {
                         </div>
                     </div>
 
+                    <?php /*
                     <div class="sostenibilidad-content-4">
                         <div class="container-fluid p-0">
                             <div class="row align-center">
@@ -92,6 +93,8 @@ if ( is_front_page() ) {
                             </div>
                         </div>
                     </div>
+
+                    */ ?>
                     
 				</main><!-- #main -->
 

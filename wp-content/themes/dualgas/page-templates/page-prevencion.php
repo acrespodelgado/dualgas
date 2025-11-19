@@ -46,13 +46,11 @@ if ( is_front_page() ) {
                             </div>
                         </div>
                         <div class="container-fluid blue-background">
-                            <div class="row">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col col-12 py-5">
-                                            <p><?php _e( 'En DUALGAS la Seguridad y Salud en el Trabajo es la base fundamental de nuestra actividad.', 'understrap-master' ); ?></p>
-                                            <p><?php _e( 'Con la meta de Cero Accidentes, integramos la prevención en todos nuestros procesos, niveles jerarquicos y alineamos nuestra estrategia con la de nuestros clientes.', 'understrap-master' ); ?></p>
-                                        </div>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col col-12 py-5">
+                                        <p><?php _e( 'En DUALGAS la Seguridad y Salud en el Trabajo es la base fundamental de nuestra actividad.', 'understrap-master' ); ?></p>
+                                        <p><?php _e( 'Con la meta de Cero Accidentes, integramos la prevención en todos nuestros procesos, niveles jerarquicos y alineamos nuestra estrategia con la de nuestros clientes.', 'understrap-master' ); ?></p>
                                     </div>
                                 </div>
                             </div>

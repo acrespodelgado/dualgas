@@ -64,7 +64,7 @@ if ( is_front_page() ) {
                                     </a>
                                 </div>
                                 <div class="col col-12 col-lg-6">
-                                    <button data-toggle="modal" data-target="#modalCanal">
+                                    <button data-bs-toggle="modal" data-bs-target="#modalCanal" type="button">
                                         <div class="green-background">
                                             <img src="<?php echo get_site_url();?>/img/linea-comunicacion-icon.png" alt="Comunicacion" class="img-responsive">
                                             <h2><?php _e( 'Línea de comunicación segura', 'understrap-master' ); ?></h2>
@@ -129,28 +129,30 @@ if ( is_front_page() ) {
                                         <h5 class="modal-title" id="modalCanalLabel">
                                             <?php _e( 'Introduzca una contraseña para abrir el canal de comunicación segura', 'understrap-master' ); ?>
                                         </h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <div class="row">
-                                            <div class="col col-12">
-                                                <input type="password" id="modal-password" name="modal-password" placeholder="Contraseña">
+                                        <form id="form-crear-caso" method="post">
+                                            <div class="row">
+                                                <div class="col col-12">
+                                                    <div class="form-group">
+                                                        <input type="password" id="modal-password" name="modal-password" placeholder="Contraseña" class="form-control" required>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </form>
                                     </div>
                                     <div class="modal-footer">
                                         <div class="row">
                                             <div class="col col-12">
-                                                <button type="button" class="btn btn-terciary" data-toggle="modal" data-target="#modalCaso" data-dismiss="modal">
+                                                <button type="button" class="btn btn-terciary" data-bs-toggle="modal" data-bs-target="#modalCaso" data-bs-dismiss="modal">
                                                 <?php _e( 'Inicie sesión con número de caso y su código de acceso', 'understrap-master' ); ?></button>
                                             </div>
                                             <div class="col col-12 col-lg-6">
-                                                <button type="button" class="btn btn-primary" id="iniciar-canal"><?php _e( 'Iniciar sesión', 'understrap-master' ); ?></button>
+                                                <button type="submit" class="btn btn-primary" id="iniciar-canal" form="form-crear-caso"><?php _e( 'Iniciar sesión', 'understrap-master' ); ?></button>
                                             </div>
                                             <div class="col col-12 col-lg-6">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php _e( 'Cancelar', 'understrap-master' ); ?></button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?php _e( 'Cancelar', 'understrap-master' ); ?></button>
                                             </div>
                                         </div>
                                     </div>
@@ -165,28 +167,32 @@ if ( is_front_page() ) {
                                         <h5 class="modal-title" id="modalCasoLabel">
                                             <?php _e( 'Acceso al caso', 'understrap-master' ); ?>
                                         </h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <div class="row">
-                                            <div class="col col-12">
-                                                <p><?php _e( 'Si ha enviado un caso desde otro dispositivo y quisiera seguirlo, puede iniciar sesión aquí con el número de 
-                                                    caso que se encuentra bajo la pestaña «Detalles» en el buzón de comunicación seguro del dispositivo original 
-                                                    y su contraseña.', 'understrap-master' ); ?></p>
-                                                <input type="number" id="modal-id-caso" name="modal-id-caso" placeholder="Id del caso">
-                                                <input type="password" id="modal-password-caso" name="modal-password-caso" placeholder="Contraseña de acceso al caso">
+                                        <form id="form-recuperar-caso" method="post">
+                                            <div class="row">
+                                                <div class="col col-12">
+                                                    <p><?php _e( 'Si ha enviado un caso desde otro dispositivo y quisiera seguirlo, puede iniciar sesión aquí con el número de 
+                                                        caso que se encuentra bajo la pestaña «Detalles» en el buzón de comunicación seguro del dispositivo original 
+                                                        y su contraseña.', 'understrap-master' ); ?></p>
+                                                    <div class="form-group mb-3">
+                                                        <input type="number" id="modal-id-caso" name="modal-id-caso" placeholder="Id del caso" class="form-control" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="password" id="modal-password-caso" name="modal-password-caso" placeholder="Contraseña de acceso al caso" class="form-control" required>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </form>
                                     </div>
                                     <div class="modal-footer">
                                         <div class="row w-100">
                                             <div class="col col-12 col-lg-6">
-                                                <button type="button" class="btn btn-primary" id="recuperar-canal"><?php _e( 'Iniciar sesión', 'understrap-master' ); ?></button>
+                                                <button type="submit" class="btn btn-primary" id="recuperar-canal" form="form-recuperar-caso"><?php _e( 'Iniciar sesión', 'understrap-master' ); ?></button>
                                             </div>
                                             <div class="col col-12 col-lg-6">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php _e( 'Cancelar', 'understrap-master' ); ?></button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?php _e( 'Cancelar', 'understrap-master' ); ?></button>
                                             </div>
                                         </div>
                                     </div>

@@ -1,39 +1,67 @@
-<?php 
+<?php
 
-    session_start();
+if (ob_get_level()) {
+    ob_end_clean();
+}
+ob_start();
 
-    require  './../wp-config.php';
+session_start();
 
-    if(isset($_POST['nick']) && !empty($_POST['nick']) &&
-    isset($_POST['password']) && !empty($_POST['password'])) {
+require_once(__DIR__ . '/../wp-config.php');
+
+ob_clean();
+
+header('Content-Type: application/json; charset=utf-8');
+header('Cache-Control: no-cache, must-revalidate');
+
+try {
+    if (isset($_POST['nick']) && !empty($_POST['nick']) &&
+        isset($_POST['password']) && !empty($_POST['password'])) {
         
         $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+        
+        if ($mysqli->connect_errno) {
+            echo json_encode(["ok" => 0, "message" => "Error de conexión"]);
+            exit;
+        }
+        
         $mysqli->set_charset("utf8");
 
-        $nick = $_POST['nick'];
-        $password = $_POST['password'];
-        $id = 0;
+        $nick = trim($_POST['nick']);
+        $password = trim($_POST['password']);
 
-        $nick = trim(htmlspecialchars($mysqli->real_escape_string($nick)));
-        $password = hash('sha256', trim(htmlspecialchars($mysqli->real_escape_string($password))));
+        // Sanitizar inputs
+        $nick = htmlspecialchars($nick);
+        $password = hash('sha256', htmlspecialchars($password));
 
+        // Prepared statement para buscar agente
         $stmt = $mysqli->prepare("SELECT id FROM agents WHERE password = ? AND nick = ?");
         $stmt->bind_param("ss", $password, $nick);
         $stmt->execute();
-        $res = $stmt->get_result();
+        $result = $stmt->get_result();
 
-        while ($fila = $res->fetch_object()) {
-            $id = $fila->id;
+        $id = null;
+        if ($row = $result->fetch_assoc()) {
+            $id = $row['id'];
         }
+        $stmt->close();
 
-        if($id > 1) {
+        if ($id && $id > 1) {
             setcookie("CookieAgente", $id.'&'.$nick.'&'.$password, time()+3600*12, "/");  /* expira en 12 horas */
-            echo json_encode(["ok" => "1"]);
+            echo json_encode(["ok" => 1]);
         } else {
-            echo json_encode(["ok" => "0", "message" => "Usuario o contraseña incorrectos"]);
+            echo json_encode(["ok" => 0, "message" => "Usuario o contraseña incorrectos"]);
         }
+
+        $mysqli->close();
+
     } else {
-        echo json_encode(["ok" => "0", "message" => "Rellene los campos del formulario"]);
+        echo json_encode(["ok" => 0, "message" => "Rellene los campos del formulario"]);
     }
 
+} catch (Exception $e) {
+    echo json_encode(["ok" => 0, "message" => "Error interno"]);
+}
+
+ob_end_flush();
 ?>

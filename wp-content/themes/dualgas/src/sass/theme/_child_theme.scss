@@ -1325,12 +1325,30 @@ footer .green-background {
     font-weight: bold;
 }
 
+#chat, 
+#admin-panel {
+    margin-top: 5rem;
+}
+
+#admin-panel h1 {
+    font-size: 54px;
+    font-weight: 600;
+    color: $accent;
+}
+
 #chat .error h1,
 #admin-panel h1.error {
     font-size: 32px;
     font-weight: bold;
     color: $accent;
     margin: 2rem 0;
+}
+
+#admin-panel .blue-background {
+    padding: 1.5rem 3rem;
+    width: 80%;
+    margin: 3rem auto;
+    border-radius: 8px;
 }
 
 #chat .error a {

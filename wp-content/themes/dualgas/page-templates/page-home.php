@@ -71,6 +71,7 @@ if ( is_front_page() ) {
                         <div class="blue-bar"></div>
                     </div>
 
+                    <?php /*
                     <div class="home-content-5 mb-5">
                         <div class="container">
                             <div class="row">
@@ -129,6 +130,8 @@ if ( is_front_page() ) {
                             </div>
                         </div>
                     </div>
+
+                    */ ?>
 
                     <div class="home-content-6 news my-5">
                         <div class="container">
